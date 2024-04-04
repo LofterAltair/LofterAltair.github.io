@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="JMeter介绍 Apache JMeter是Apache组织开发的基于Java的压力测试工具。用于对软件做压力测试，它最初被设计用于Web应用测试，但后来扩展到其他测试领域。 它可以用于测试静态和动态资源，例如静态文件、Java 小服务程序、CGI 脚本、Java 对象、数据库、FTP 服务器， 等等。JMeter 可以用于对服务器、网络或对象模拟巨大的负载，来自不同压力类别下测试它们的强度和分">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JMeter安装步骤">
+<meta property="og:url" content="http://example.com/2020/06/02/jmeter%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4/index.html">
+<meta property="og:site_name" content="YCJ&#39;s Blog">
+<meta property="og:description" content="JMeter介绍 Apache JMeter是Apache组织开发的基于Java的压力测试工具。用于对软件做压力测试，它最初被设计用于Web应用测试，但后来扩展到其他测试领域。 它可以用于测试静态和动态资源，例如静态文件、Java 小服务程序、CGI 脚本、Java 对象、数据库、FTP 服务器， 等等。JMeter 可以用于对服务器、网络或对象模拟巨大的负载，来自不同压力类别下测试它们的强度和分">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/Snipaste_2020-06-02_14-08-52.png">
+<meta property="og:image" content="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/Snipaste_2020-06-02_14-15-00.png">
+<meta property="og:image" content="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/Snipaste_2020-06-02_14-11-48.png">
+<meta property="og:image" content="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/Snipaste_2020-06-02_14-12-29.png">
+<meta property="og:image" content="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/Snipaste_2020-06-02_14-20-26.png">
+<meta property="og:image" content="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/Snipaste_2020-06-02_14-33-14.png">
+<meta property="og:image" content="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/image007.png">
+<meta property="og:image" content="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/image009.png">
+<meta property="og:image" content="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/image011.png">
+<meta property="og:image" content="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/image013.png">
+<meta property="og:image" content="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/image015.png">
+<meta property="og:image" content="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/image017.png">
+<meta property="og:image" content="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/image019.png">
+<meta property="og:image" content="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/image021.png">
+<meta property="article:published_time" content="2020-06-02T12:19:16.000Z">
+<meta property="article:modified_time" content="2024-04-04T08:18:08.310Z">
+<meta property="article:author" content="YCJ">
+<meta property="article:tag" content="jmeter">
+<meta property="article:tag" content="接口测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/Snipaste_2020-06-02_14-08-52.png">
+
+
+<link rel="canonical" href="http://example.com/2020/06/02/jmeter%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2020/06/02/jmeter%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4/","path":"2020/06/02/jmeter安装步骤/","title":"JMeter安装步骤"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>JMeter安装步骤 | YCJ's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">YCJ's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#JMeter%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">JMeter介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.</span> <span class="nav-text">安装步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85jdk"><span class="nav-number">2.1.</span> <span class="nav-text">安装jdk</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%8E%8B%E5%AE%89%E8%A3%85%E5%8C%85%E5%90%8E%E8%BF%9B%E8%A1%8C%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="nav-number">2.2.</span> <span class="nav-text">解压安装包后进行配置环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E5%B9%B6%E8%A7%A3%E5%8E%8B-JMeter"><span class="nav-number">2.3.</span> <span class="nav-text">下载并解压 JMeter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C-JMeter"><span class="nav-number">2.4.</span> <span class="nav-text">运行 JMeter</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">YCJ</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/06/02/jmeter%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="YCJ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YCJ's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JMeter安装步骤 | YCJ's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JMeter安装步骤
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-06-02 12:19:16" itemprop="dateCreated datePublished" datetime="2020-06-02T12:19:16+00:00">2020-06-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-04-04 08:18:08" itemprop="dateModified" datetime="2024-04-04T08:18:08+00:00">2024-04-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%B5%8B%E8%AF%95%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">测试学习</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>899</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="JMeter介绍"><a href="#JMeter介绍" class="headerlink" title="JMeter介绍"></a>JMeter介绍</h2><blockquote>
+<p>Apache JMeter是Apache组织开发的基于Java的压力测试工具。用于对软件做压力测试，它最初被设计用于Web应用测试，但后来扩展到其他测试领域。 它可以用于测试静态和动态资源，例如静态文件、Java 小服务程序、CGI 脚本、Java 对象、数据库、FTP 服务器， 等等。JMeter 可以用于对服务器、网络或对象模拟巨大的负载，来自不同压力类别下测试它们的强度和分析整体性能。另外，JMeter能够对应用程序做功能&#x2F;回归测试，通过创建带有断言的脚本来验证你的程序返回了你期望的结果。为了最大限度的灵活性，JMeter允许使用正则表达式创建断言。</p>
+</blockquote>
+<blockquote>
+<p>更多详情请前往<a target="_blank" rel="noopener" href="https://jmeter.apache.org/">官网</a>查看</p>
+</blockquote>
+<h2 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h2><h3 id="安装jdk"><a href="#安装jdk" class="headerlink" title="安装jdk"></a>安装jdk</h3><p>(jdk安装包，双击进行安装)</p>
+<p>在<a target="_blank" rel="noopener" href="https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html">java开发套件</a>中找到对应的jdk版本，下载并安装。我下载的是 jdk-8u191-windows-x64.exe 版本</p>
+<h3 id="解压安装包后进行配置环境变量"><a href="#解压安装包后进行配置环境变量" class="headerlink" title="解压安装包后进行配置环境变量"></a>解压安装包后进行配置环境变量</h3><ol>
+<li>系统变量-&gt;新建 JAVA_HOME 变量，变量值填写jdk的安装目录（本人是F:\jdk），如下图</li>
+</ol>
+<p><img src="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/Snipaste_2020-06-02_14-08-52.png"></p>
+<ol start="2">
+<li>系统变量-&gt;新建 CLASSPATH 变量，变量值填写 .;%JAVA_HOME%\lib;%JAVA_HOME%\lib\tools.jar; (注意最前面有一点)</li>
+</ol>
+<p><img src="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/Snipaste_2020-06-02_14-15-00.png"></p>
+<ol start="3">
+<li>系统变量-&gt;寻找到 Path 变量-&gt; 编辑 ， 在变量值最后添加 %JAVA_HOME%\bin;%JAVA_HOME%\jre\bin;</li>
+</ol>
+<p><img src="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/Snipaste_2020-06-02_14-11-48.png"></p>
+<p><img src="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/Snipaste_2020-06-02_14-12-29.png"></p>
+<ol start="4">
+<li>检验是否配置成功 ， 运行cmd 输入 java -version ， 如果出现如下结果，则说明JDK环境变量配置成功</li>
+</ol>
+<p><img src="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/Snipaste_2020-06-02_14-20-26.png"></p>
+<h3 id="下载并解压-JMeter"><a href="#下载并解压-JMeter" class="headerlink" title="下载并解压 JMeter"></a>下载并解压 JMeter</h3><p>在<a target="_blank" rel="noopener" href="https://jmeter.apache.org/download_jmeter.cgi">JMeter</a>中找到对应的版本并解压。我安装的是 apache-jmeter-3.2.rar 版本</p>
+<h3 id="运行-JMeter"><a href="#运行-JMeter" class="headerlink" title="运行 JMeter"></a>运行 JMeter</h3><p>进入解压路径并找到 jmeter.exe</p>
+<p><img src="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/Snipaste_2020-06-02_14-33-14.png"></p>
+<p>打开后界面如下 </p>
+<p><img src="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/image007.png"></p>
+<p>添加一个线程组</p>
+<p><img src="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/image009.png"></p>
+<p>添加：结果树和聚合报告</p>
+<p><img src="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/image011.png"></p>
+<p>点击线程组进行填写数据.（设置用户量的时候，别设置太大，不然直接把服务器搞崩）</p>
+<p><img src="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/image013.png"></p>
+<p>填写HTTP请求内容</p>
+<p><img src="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/image015.png"></p>
+<p>运行</p>
+<p><img src="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/image017.png"></p>
+<p>这个其实是看 聚合报告的 错误率。（在http请求里，慢慢的增加用户量，来测试该接口能承受的压力）</p>
+<p><img src="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/image019.png"></p>
+<p>聚合报告可看的性能测试内容（其余可用adb命令或者Android Studio来查看）</p>
+<p><img src="https://lofaltair-1253512131.cos.ap-guangzhou.myqcloud.com/image021.png"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>YCJ
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2020/06/02/jmeter%E5%AE%89%E8%A3%85%E6%AD%A5%E9%AA%A4/" title="JMeter安装步骤">http://example.com/2020/06/02/jmeter安装步骤/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/jmeter/" rel="tag"># jmeter</a>
+              <a href="/tags/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95/" rel="tag"># 接口测试</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/04/11/Python3%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B%E5%B0%9D%E8%AF%95/" rel="prev" title="Python3异步编程尝试">
+                  <i class="fa fa-angle-left"></i> Python3异步编程尝试
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">YCJ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Spine由于项目需要更好的动画表现效果,于是搜索了一番,发现了spine这款软件,能将2D的动画表现得如同3D一般,效果十分的好,官网上有很多案例演示可以看看. 下面这是官网的部分描述:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spine动画性能优化">
+<meta property="og:url" content="http://example.com/2020/03/30/Spine%E5%8A%A8%E7%94%BB%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/index.html">
+<meta property="og:site_name" content="YCJ&#39;s Blog">
+<meta property="og:description" content="Spine由于项目需要更好的动画表现效果,于是搜索了一番,发现了spine这款软件,能将2D的动画表现得如同3D一般,效果十分的好,官网上有很多案例演示可以看看. 下面这是官网的部分描述:">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-30T11:43:16.000Z">
+<meta property="article:modified_time" content="2024-04-04T08:18:08.310Z">
+<meta property="article:author" content="YCJ">
+<meta property="article:tag" content="Spine">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/03/30/Spine%E5%8A%A8%E7%94%BB%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2020/03/30/Spine%E5%8A%A8%E7%94%BB%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/","path":"2020/03/30/Spine动画性能优化/","title":"Spine动画性能优化"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Spine动画性能优化 | YCJ's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">YCJ's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Spine"><span class="nav-number">1.</span> <span class="nav-text">Spine</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%81%87%E5%88%B0%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">遇到问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E4%BB%A3%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">分析代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">4.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B7%E4%BD%93%E4%BB%A3%E7%A0%81"><span class="nav-number">5.</span> <span class="nav-text">具体代码</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">YCJ</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/03/30/Spine%E5%8A%A8%E7%94%BB%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="YCJ">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YCJ's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Spine动画性能优化 | YCJ's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spine动画性能优化
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-03-30 11:43:16" itemprop="dateCreated datePublished" datetime="2020-03-30T11:43:16+00:00">2020-03-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-04-04 08:18:08" itemprop="dateModified" datetime="2024-04-04T08:18:08+00:00">2024-04-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">技术学习</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="Spine"><a href="#Spine" class="headerlink" title="Spine"></a>Spine</h2><p>由于项目需要更好的动画表现效果,于是搜索了一番,发现了spine这款软件,能将2D的动画表现得如同3D一般,效果十分的好,官网上有很多<a target="_blank" rel="noopener" href="http://zh.esotericsoftware.com/spine-demos">案例演示</a>可以看看.</p>
+<p>下面这是<a target="_blank" rel="noopener" href="http://zh.esotericsoftware.com/">官网</a>的部分描述:</p>
+<blockquote>
+<p>Spine 是一款针对游戏开发的 2D 骨骼动画编辑工具。 Spine 旨在提供更高效和简洁 的工作流程，以创建游戏所需的动画。<br>在 Spine 中通过将图片绑定到骨骼上，然后再控制骨骼实现动画。 2D 骨骼动画相对于传统的逐帧动画有以下优势:</p>
+<ul>
+<li>最小的体积: 传统的动画需要提供每一帧图片。而 Spine 动画只保存骨骼的动画数据，它所占用的空间非常小，并能为你的游戏提供独一无二的动画。</li>
+<li>美术需求: Spine 动画需要的美术资源更少，能为您节省出更多的人力物力更好的投入到游戏开发中去。</li>
+<li>流畅性: Spine 动画使用差值算法计算中间帧，这能让你的动画总是保持流畅的效果。</li>
+<li>装备附件: 图片绑定在骨骼上来实现动画。如果你需要可以方便的更换角色的装备满足不同的需求。甚至改变角色的样貌来达到动画重用的效果。</li>
+<li>混合: 动画之间可以进行混合。比如一个角色可以开枪射击，同时也可以走、跑、跳或者游泳。</li>
+<li>程序动画: 可以通过代码控制骨骼，比如可以实现跟随鼠标的射击，注视敌人，或者上坡时的身体前倾等效果。</li>
+</ul>
+</blockquote>
+<h2 id="遇到问题"><a href="#遇到问题" class="headerlink" title="遇到问题"></a>遇到问题</h2><p>经过一段时间的实验,Spine的动画效果确实不错,但是在性能上仍有些问题.</p>
+<ol>
+<li><p>场景中加载大量spine动画时会异常卡顿,严重的话甚至会闪退,低端机器尤其明显</p>
+</li>
+<li><p>动画数据没有缓存机制,同一动画加载多次,内存消耗暴增.</p>
+</li>
+</ol>
+<h2 id="分析代码"><a href="#分析代码" class="headerlink" title="分析代码"></a>分析代码</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="type">static</span> SkeletonAnimation* <span class="title">createWithJsonFile</span> <span class="params">(<span class="type">const</span> std::string&amp; skeletonJsonFile, <span class="type">const</span> std::string&amp; atlasFile, <span class="type">float</span> scale = <span class="number">1</span>)</span></span>;</span><br><span class="line">	<span class="function"><span class="type">static</span> SkeletonAnimation* <span class="title">createWithBinaryFile</span> <span class="params">(<span class="type">const</span> std::string&amp; skeletonBinaryFile, <span class="type">const</span> std::string&amp; atlasFile, <span class="type">float</span> scale = <span class="number">1</span>)</span></span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>通过导出的.json文件或者.skel文件创建一个SkeletonAnimation,即一个spine动画实例</p>
+<p>由于同一个动画,导出的.json文件,要比二进制.skel文件大上不少,我强烈建议spine动画都采用二进制导出,<br>在解析效率、以及文件大小上都更有优势</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="function">SkeletonAnimation* <span class="title">SkeletonAnimation::createWithBinaryFile</span> <span class="params">(<span class="type">const</span> std::string&amp; skeletonBinaryFile, <span class="type">const</span> std::string&amp; atlasFile, <span class="type">float</span> scale)</span> </span>&#123;</span><br><span class="line">	SkeletonAnimation* node = <span class="keyword">new</span> <span class="built_in">SkeletonAnimation</span>();</span><br><span class="line">	spAtlas* atlas = <span class="built_in">spAtlas_createFromFile</span>(atlasFile.<span class="built_in">c_str</span>(), <span class="number">0</span>);</span><br><span class="line">	node-&gt;<span class="built_in">initWithBinaryFile</span>(skeletonBinaryFile, atlas, scale);</span><br><span class="line">	node-&gt;<span class="built_in">autorelease</span>();</span><br><span class="line">	<span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">SkeletonRenderer::initWithBinaryFile</span> <span class="params">(<span class="type">const</span> std::string&amp; skeletonDataFile, spAtlas* atlas, <span class="type">float</span> scale)</span> </span>&#123;</span><br><span class="line">		_atlas = atlas;</span><br><span class="line">		_attachmentLoader = <span class="built_in">SUPER</span>(<span class="built_in">Cocos2dAttachmentLoader_create</span>(_atlas));<span class="comment">//创建AttachmentLoader</span></span><br><span class="line"></span><br><span class="line">		spSkeletonBinary* binary = <span class="built_in">spSkeletonBinary_createWithLoader</span>(_attachmentLoader);<span class="comment">//解析binary文件</span></span><br><span class="line">		binary-&gt;scale = scale;</span><br><span class="line">		spSkeletonData* skeletonData = <span class="built_in">spSkeletonBinary_readSkeletonDataFile</span>(binary, skeletonDataFile.<span class="built_in">c_str</span>());<span class="comment">//将解析后的binary转换为skeletonData</span></span><br><span class="line">		<span class="built_in">CCASSERT</span>(skeletonData, binary-&gt;error ? binary-&gt;error : <span class="string">&quot;Error reading skeleton data file.&quot;</span>);</span><br><span class="line">		<span class="built_in">spSkeletonBinary_dispose</span>(binary);<span class="comment">//释放binary解析的占用</span></span><br><span class="line">		_ownsSkeleton = <span class="literal">true</span>;</span><br><span class="line">		<span class="built_in">setSkeletonData</span>(skeletonData, <span class="literal">true</span>);<span class="comment">//将skeletonData赋予当前的SkeletonRenderer</span></span><br><span class="line"></span><br><span class="line">		<span class="built_in">initialize</span>();<span class="comment">//初始化</span></span><br><span class="line">	&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>分析二进制文件创建spine动画的源码可以看出,加载spine动画时,需要读取解析json文件里的动画信息,并转换为内存对象.</p>
+<p>而这整个过程是阻塞的,当大量动画同时加载时,造成阻塞的时间较长,就会出现问题1的情况</p>
+<p>针对这个问题，可以避免同一个时间加载过多的Spine动画，采取分帧加载，这样可以分摊压力，不至于瞬间卡死。但是这种方法无法解决第二个问题</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>一开始的时候,我是打算新建SpineCache类来保存skeletonData,当加载重复的spine动画时,直接把上次缓存的skeletonData返回即可，这样既避免了内存暴涨，又避免了多余的加载过程。</p>
+<p>但是在过程中发现一些问题:</p>
+<ul>
+<li>skeletonData的缓存占用,对于大部分手机设备来说可以接受,但是在智能手表设备上,运行越久,会导致应用不流畅.</li>
+<li>针对skeletonData的缓存做出某些修改的话,这些修改也会在后续创建的重复的spine生效,这是我并不希望看到的.</li>
+</ul>
+<p>于是我打算只保存解析json文件之后获得的spSkeletonJson,当加载重复的spine动画时,直接把上次解析获得的spSkeletonJson返回,只省略重复的解析消耗.</p>
+<p>虽然加载动画的速度并没有直接缓存skeletonData来得快,但也比原来的加载速度快很多,同时缓存的占用也变得可以接受</p>
+<h2 id="具体代码"><a href="#具体代码" class="headerlink" title="具体代码"></a>具体代码</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;cocos/editor-support/spine/spine-cocos2dx.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;cocos2d.h&quot;</span></span></span><br><span class="line"></span><br><span class="line">USING_NS_CC;</span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> spine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AnimSpineCache</span> : <span class="keyword">public</span> cocos2d::Ref</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="built_in">AnimSpineCache</span>();</span><br><span class="line">	~<span class="built_in">AnimSpineCache</span>();</span><br><span class="line">	<span class="function"><span class="type">static</span> AnimSpineCache* <span class="title">getInstance</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function">spine::SkeletonAnimation* <span class="title">createAnimation</span><span class="params">(<span class="type">const</span> std::string&amp; binaryFile, <span class="type">const</span> std::string&amp; atlasFile, <span class="type">float</span> scale = <span class="number">1</span>)</span></span>;</span><br><span class="line">    <span class="function">spSkeletonBinary* <span class="title">getSkeletonBinary</span><span class="params">(<span class="type">const</span> std::string&amp; atlasFile)</span></span>;</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">clearCache</span><span class="params">()</span></span>;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line"></span><br><span class="line">	<span class="type">static</span> AnimSpineCache* sAnimSpineCache;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line"></span><br><span class="line">	<span class="type">static</span> std::map&lt;std::string, spSkeletonBinary*&gt; m_animDataTable;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;AnimSpineCache.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;spine/SkeletonAnimation.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;spine/extension.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">AnimSpineCache* AnimSpineCache::sAnimSpineCache = <span class="literal">nullptr</span>;</span><br><span class="line">std::map&lt;std::string, spSkeletonBinary*&gt; AnimSpineCache::m_animDataTable;</span><br><span class="line"></span><br><span class="line">AnimSpineCache::<span class="built_in">AnimSpineCache</span>()</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">AnimSpineCache::~<span class="built_in">AnimSpineCache</span>()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">clearCache</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">AnimSpineCache* <span class="title">AnimSpineCache::getInstance</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (<span class="literal">nullptr</span> == sAnimSpineCache)</span><br><span class="line">	&#123;</span><br><span class="line">		sAnimSpineCache = <span class="keyword">new</span> <span class="built_in">AnimSpineCache</span>();</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> sAnimSpineCache;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//创建spine动画,如果缓存，则不重新加载。</span></span><br><span class="line"><span class="function">spine::SkeletonAnimation* <span class="title">AnimSpineCache::createAnimation</span><span class="params">(<span class="type">const</span> std::string&amp; binaryFile, <span class="type">const</span> std::string&amp; atlasFile, <span class="type">float</span> scale)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="built_in">CCLOG</span>(<span class="string">&quot;createAnimation binaryFile is %s&quot;</span>, binaryFile.<span class="built_in">c_str</span>());</span><br><span class="line">	spine::SkeletonAnimation* node = <span class="keyword">new</span> <span class="built_in">SkeletonAnimation</span>();</span><br><span class="line">	spSkeletonBinary* skeletonBinary = <span class="built_in">getSkeletonBinary</span>(atlasFile);</span><br><span class="line">	spSkeletonData* skeletonData;</span><br><span class="line">	<span class="keyword">if</span> (<span class="literal">nullptr</span> == skeletonBinary)</span><br><span class="line">	&#123;</span><br><span class="line">		spAtlas* atlas = <span class="built_in">spAtlas_createFromFile</span>(atlasFile.<span class="built_in">c_str</span>(), <span class="number">0</span>);</span><br><span class="line">		<span class="built_in">CCASSERT</span>(atlas, <span class="string">&quot;Error reading atlas file.&quot;</span>);</span><br><span class="line"></span><br><span class="line">		spAttachmentLoader* attachmentLoader = <span class="built_in">SUPER</span>(<span class="built_in">Cocos2dAttachmentLoader_create</span>(atlas));</span><br><span class="line"></span><br><span class="line">		skeletonBinary = <span class="built_in">spSkeletonBinary_createWithLoader</span>(attachmentLoader);</span><br><span class="line">		skeletonBinary-&gt;scale = scale;</span><br><span class="line">		skeletonData = <span class="built_in">spSkeletonBinary_readSkeletonDataFile</span>(skeletonBinary, binaryFile.<span class="built_in">c_str</span>());</span><br><span class="line">		<span class="built_in">CCASSERT</span>(skeletonData, skeletonBinary-&gt;error ? skeletonBinary-&gt;error : <span class="string">&quot;Error reading skeleton data file.&quot;</span>);</span><br><span class="line">		m_animDataTable.<span class="built_in">insert</span>(std::map&lt;std::string, spSkeletonBinary*&gt;::<span class="built_in">value_type</span>(atlasFile, skeletonBinary));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		skeletonBinary-&gt;scale = scale;</span><br><span class="line">		skeletonData = <span class="built_in">spSkeletonBinary_readSkeletonDataFile</span>(skeletonBinary, binaryFile.<span class="built_in">c_str</span>());</span><br><span class="line">		<span class="built_in">CCASSERT</span>(skeletonData, skeletonBinary-&gt;error ? skeletonBinary-&gt;error : <span class="string">&quot;Error reading skeleton data file.&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	spine::SkeletonAnimation* node = <span class="keyword">new</span> <span class="built_in">SkeletonAnimation</span>();</span><br><span class="line">	node-&gt;<span class="built_in">initWithData</span>(skeletonData, <span class="literal">false</span>);</span><br><span class="line">	node-&gt;<span class="built_in">autorelease</span>();</span><br><span class="line">	<span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">spSkeletonBinary* <span class="title">AnimSpineCache::getSkeletonBinary</span><span class="params">(<span class="type">const</span> std::string&amp; atlasFile)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	std::map&lt;std::string, spSkeletonBinary*&gt;::iterator it = m_animDataTable.<span class="built_in">find</span>(atlasFile);</span><br><span class="line">	<span class="keyword">if</span> (it != m_animDataTable.<span class="built_in">end</span>())</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">return</span> it-&gt;second;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 退出游戏，或者关卡结束释放。</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">AnimSpineCache::clearCache</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	std::map&lt;std::string, spSkeletonBinary*&gt;::iterator it = m_animDataTable.<span class="built_in">begin</span>();</span><br><span class="line">	<span class="keyword">for</span> (; it != m_animDataTable.<span class="built_in">end</span>(); it++)</span><br><span class="line">	&#123;</span><br><span class="line">		spSkeletonBinary* p = it-&gt;second;</span><br><span class="line">		<span class="built_in">spSkeletonBinary_dispose</span>(p);</span><br><span class="line">	&#125;</span><br><span class="line">	m_animDataTable.<span class="built_in">clear</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在测试spine动画性能的过程中,发现了一些内存泄漏的现象,接下来的文章再具体分析分析……</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>YCJ
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2020/03/30/Spine%E5%8A%A8%E7%94%BB%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" title="Spine动画性能优化">http://example.com/2020/03/30/Spine动画性能优化/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Spine/" rel="tag"># Spine</a>
+              <a href="/tags/C/" rel="tag"># C++</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/03/27/unity%E7%BB%83%E4%B9%A0-%E4%B8%80-%E7%94%9F%E5%91%BD%E6%B8%B8%E6%88%8F/" rel="prev" title="unity练习(一)生命游戏">
+                  <i class="fa fa-angle-left"></i> unity练习(一)生命游戏
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/03/31/Cocos2d-x%E4%BD%BF%E7%94%A8AssetsManager%E9%81%87%E8%A7%81%E4%B8%8B%E8%BD%BD%E9%94%99%E8%AF%AF%E9%97%AE%E9%A2%98/" rel="next" title="Cocos2d-x使用AssetsManager遇见下载错误问题">
+                  Cocos2d-x使用AssetsManager遇见下载错误问题 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">YCJ</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
